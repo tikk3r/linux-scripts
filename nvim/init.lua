@@ -13,6 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- all plugins are in ~/.config/nvim/lua/plugins/*.lua
 require("lazy").setup("plugins")
+--require("telescope").load_extension("harpoon")
 --require'lspconfig'.pyright.setup{}
 
 vim.cmd [[colorscheme tokyonight-moon]]
