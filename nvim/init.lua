@@ -10,9 +10,11 @@ if not vim.loop.fs_stat(lazypath) then
     })
 end
 vim.opt.rtp:prepend(lazypath)
+vim.opt.clipboard = "unnamedplus"
 
 -- all plugins are in ~/.config/nvim/lua/plugins/*.lua
 require("lazy").setup("plugins")
+require("nvim-lastplace").setup{}
 --require("telescope").load_extension("harpoon")
 --require'lspconfig'.pyright.setup{}
 
