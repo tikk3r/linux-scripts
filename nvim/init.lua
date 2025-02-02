@@ -1,3 +1,12 @@
+--vim.opt.scrolloff = 26
+vim.opt.scrolloff = 10
+
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+
+vim.cmd [[set undofile]]
+vim.cmd [[set undodir=$HOME/.undodir]]
+vim.cmd [[set mouse=]]
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -10,21 +19,20 @@ if not vim.loop.fs_stat(lazypath) then
     })
 end
 vim.opt.rtp:prepend(lazypath)
-vim.opt.clipboard = "unnamedplus"
 
 -- all plugins are in ~/.config/nvim/lua/plugins/*.lua
 require("lazy").setup("plugins")
-require("nvim-lastplace").setup{}
---require("telescope").load_extension("harpoon")
---require'lspconfig'.pyright.setup{}
+require("nvim-lastplace").setup {}
 
 vim.cmd [[colorscheme tokyonight-moon]]
 vim.cmd [[set number]]
+vim.cmd [[set relativenumber]]
 vim.cmd [[    autocmd BufRead * autocmd FileType <buffer> ++once
       \ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
 ]]
 vim.cmd [[noremap! <C-BS> <C-w>]]
 vim.cmd [[noremap! <C-h> <C-w>]]
+vim.cmd [[xnoremap Y "+y]]
 --vim.cmd[[set clipboard=unnamedplus]]
 
 -- Setup language servers.
@@ -42,7 +50,15 @@ lspconfig.rust_analyzer.setup {
         ['rust-analyzer'] = {},
     },
 }
-lspconfig.lua_ls.setup {}
+lspconfig.lua_ls.setup {
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { 'vim' }
+            }
+        }
+    }
+}
 
 -- Make line numbers more readable
 vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#51B3EC', bold = true })
