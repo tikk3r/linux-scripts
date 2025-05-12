@@ -37,13 +37,52 @@ vim.cmd [[xnoremap Y "+y]]
 
 -- Setup language servers.
 local lspconfig = require('lspconfig')
+lspconfig.ruff.setup {
+    init_options = {
+        settings = {
+            -- Any extra CLI arguments for `ruff` go here.
+            args = { importStrategy = 'useBundled' },
+        }
+    }
+}
 lspconfig.pyright.setup {
     settings = {
         python = {
             venvPath = '/home/sweijen/anaconda3/',
+            pythonVersion = 3.12,
+            pythonPlatform = "Linux",
+            analysis = { diagnosticMode = 'openFilesOnly' },
+            --analysis = { ignore = { "*" } },
+        },
+        pyright = {
+            -- Disable to use Ruff's import organiser.
+            disableOrganizeImports = true,
         },
     }
 }
+
+vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = true,
+    virtual_text = false,
+    signs = true,
+    update_in_insert = false,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client == nil then
+            return
+        end
+        if client.name == 'ruff' then
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+        end
+    end,
+    desc = 'LSP: Disable hover capability from Ruff',
+})
+
 lspconfig.rust_analyzer.setup {
     -- Server-specific settings. See `:help lspconfig-setup`
     settings = {
@@ -82,6 +121,8 @@ vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
+vim.keymap.set('n', '<a-I>', ":! isort " .. vim.fn.expand("%") .. "<cr><cr>")
 
 -- Use LspAttach autocommand to only map the following keys
 -- after the language server attaches to the current buffer
