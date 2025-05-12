@@ -1,0 +1,9 @@
+function liveq {
+	watch -n 1 'squeue -o "%.18i %.10P %.50j %.10u %.2t %.10M %.16R %.4C %S %e" | tail -n $(($LINES-2))'
+}
+function livequ {
+	watch -n 1 'squeue -o "%.18i %.10P %.50j %.10u %.2t %.10M %.16R %.4C %S %e" -u $USER | tail -n $(($LINES-2))'
+}
+function jobtime {
+	sacct --job=$1 -o "JobID,Elapsed,ElapsedRaw,AllocCPUs,CPUTimeRaw"
+}
