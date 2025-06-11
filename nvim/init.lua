@@ -45,21 +45,34 @@ lspconfig.ruff.setup {
         }
     }
 }
+-- https://docs.google.com/spreadsheets/d/1Of-wqgZc4htqWn_V5QVPjQW5ozppDE4Chcm-EIS-gUY/edit?gid=0#gid=0
 lspconfig.pyright.setup {
     settings = {
         python = {
             venvPath = '/home/sweijen/anaconda3/',
             pythonVersion = 3.12,
             pythonPlatform = "Linux",
-            analysis = { diagnosticMode = 'openFilesOnly' },
+            analysis = { diagnosticMode = 'openFilesOnly', disableTaggedHints = true },
             --analysis = { ignore = { "*" } },
         },
         pyright = {
             -- Disable to use Ruff's import organiser.
             disableOrganizeImports = true,
+            disableTaggedHints = true,
         },
     }
 }
+
+--lspconfig.basedpyright.setup {
+--    settings = {
+--        basedpyright = {
+--            openFilesOnly = true,
+--            analysis = {
+--                diagnosticMode = "openFilesOnly"
+--            }
+--        }
+--    }
+--}
 
 vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
     underline = true,
